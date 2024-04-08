@@ -1,31 +1,27 @@
 from importlib.util import find_spec
+from dataclasses import dataclass
 import re
 import cv2
 import pytesseract
 from vloc.config.catalog import VL
 from vloc.exception.catalog import OcrException
-if PLUGIN_SELENIUM := find_spec('vloc_plugin_selenium'):
+if find_spec('vloc_plugin_selenium'):
     from vloc_plugin_selenium.__info__ import Action as SeleniumAction
 
 
+@dataclass
 class DetectInfo:
-    x: int = None
-    y: int = None
-    label: str = None
-    conf: float = None
-    crop: str = None
+    x: int
+    y: int
+    label: str
+    conf: float
+    crop: str
     ocr: str = None
 
-    def __init__(self,
-                 x: int,
-                 y: int,
-                 label: str,
-                 conf: float,
-                 crop: str,
-                 ocr=None):
+    def __post_init__(self):
 
-        if any(x in ['selenium', 'appium'] for x in str(VL.screenshot_method.__self__)):
-            action = SeleniumAction(x, y, VL.screenshot_method.__self__)
+        if any(cls in str(VL.screenshot_method.__self__) for cls in ['selenium', 'appium']):
+            action = SeleniumAction(self.x, self.y, VL.screenshot_method.__self__)
 
             self.click = action.click
             self.input = action.input
@@ -56,6 +52,3 @@ class DetectInfo:
 
         txt = re.sub(remove, '', txt).strip() if remove else txt
         return txt
-
-
-
