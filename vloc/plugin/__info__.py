@@ -5,7 +5,7 @@ import cv2
 import pytesseract
 from vloc.config.catalog import VL
 from vloc.exception.catalog import OcrException
-if find_spec('vloc_plugin_selenium'):
+if find_spec('vloc.plugin.selenium'):
     from vloc.plugin.selenium.__info__ import Action as SeleniumAction
 
 
