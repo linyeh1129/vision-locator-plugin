@@ -3,10 +3,10 @@ from dataclasses import dataclass
 import re
 import cv2
 import pytesseract
-from vloc.config.catalog import VL
-from vloc.exception.catalog import OcrException
-if find_spec('vloc.plugin.selenium'):
-    from vloc.plugin.selenium.__info__ import Action as SeleniumAction
+from vloc.config import VL
+from vloc.exception import OcrException
+if find_spec('vloc.plugin.__selenium__'):
+    from vloc.plugin.__selenium__.__info__ import Action as SeleniumAction
 
 
 @dataclass
