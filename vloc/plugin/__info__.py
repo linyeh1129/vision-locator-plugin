@@ -3,10 +3,10 @@ from dataclasses import dataclass
 import re
 import cv2
 import pytesseract
-from vloc.config import VL
-from vloc.exception import OcrException
+from vloc.module import VlocModule
+from vloc.exception import VlocOcrError
 if find_spec('vloc.plugin.__selenium__'):
-    from vloc.plugin.__selenium__.__info__ import Action as SeleniumAction
+    from vloc.plugin.__selenium__.__info__ import DetectAction as SeleniumDetectAction
 
 
 @dataclass
@@ -20,8 +20,8 @@ class DetectInfo:
 
     def __post_init__(self):
 
-        if any(cls in str(VL.screenshot_method.__self__) for cls in ['selenium', 'appium']):
-            action = SeleniumAction(self.x, self.y, VL.screenshot_method.__self__)
+        if any(cls in str(VlocModule.screenshot_method.__self__) for cls in ['selenium', 'appium']):
+            action = SeleniumDetectAction(self.x, self.y, VlocModule.screenshot_method.__self__)
 
             self.click = action.click
             self.input = action.input
@@ -47,7 +47,7 @@ class DetectInfo:
         if search:
             txt = re.search(search, txt)
             if not txt:
-                raise OcrException(f'text search pattern not contains:{search}')
+                raise VlocOcrError(f'text search pattern not contains:{search}')
             txt = txt.group(0)
 
         txt = re.sub(remove, '', txt).strip() if remove else txt
